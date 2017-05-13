@@ -1,0 +1,2 @@
+# newsletters
+Rust project
