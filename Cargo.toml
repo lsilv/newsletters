@@ -1,0 +1,6 @@
+[package]
+name = "newsletters"
+version = "0.1.0"
+authors = ["SilviaL <silvialeontiuc@gmail.com>"]
+
+[dependencies]
