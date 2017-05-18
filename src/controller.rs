@@ -3,6 +3,7 @@ use iron::status;
 use iron::Handler;
 use std::sync::{Arc, Mutex};
 use std::ops::Deref;
+use std::path::Path;
 use serde_json;
 use std::io::Read;
 use model::*;
@@ -19,12 +20,10 @@ impl Handler for AddUserHandler {
     fn handle(&self, req : &mut Request) -> IronResult<Response> {
         let mut new_user = String::new();
         req.body.read_to_string(&mut new_user);
-        println!("{}", new_user);
-
         let user: User = serde_json::from_str(&new_user).unwrap();
+        self.database.deref().lock().unwrap().insert_user(user);
 
-//        let ujson = json!(u);
-        Ok(Response::with((status::Ok, new_user)))
+        Ok(Response::with((status::Ok, "Ok")))
     }
 }
 

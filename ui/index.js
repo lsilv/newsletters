@@ -5,15 +5,21 @@ $(document).ready(
             for (index in users) {
                 $("#usersTable").append(buildUserRow(users[index]));
             }
-            $("#usersTable").append(buildAddRow());
         });
 
 
         $("#add").click(function () {
-            var newEmail = $("#email").val();
-            $.post("http://localhost:3000/users", "{\"email\" : newEmail}", function(res) {
-                        $("#users").text(res);
-                    });
+            var newUser = "{\"email\" : \"" + $("#newEmail").val() + "\", ";
+            newUser += "\"first_name\" : \"" + $("#newFirstName").val() + "\", ";
+            newUser += "\"last_name\" : \"" + $("#newLastName").val() + "\"}";
+
+            $.post("/users", newUser, function(res) {
+                if (res == "Ok") {
+                    window.location.href = "http://localhost:3000/index";
+                } else {
+                    $("#newUser").append("Error");
+                }
+            });
         });
     }
 );
@@ -27,13 +33,4 @@ function buildUserRow(user) {
     html += "</tr>";
 
     return html;
-}
-
-function buildAddRow() {
-    return "<tr>" +
-                "<td><input class=\"w3-input\" placeholder=\"New email\"></td>" +
-                "<td><input class=\"w3-input\" placeholder=\"First name\"></td>" +
-                "<td><input class=\"w3-input\" placeholder=\"Last name\"></td>" +
-                "<td><button class=\"w3-button w3-circle w3-hover-indigo\" id=\"Add\"><b>+</b></button></td>" +
-            "</tr>";
 }
