@@ -28,7 +28,7 @@ fn jshandler(_: &mut Request) -> IronResult<Response> {
 
 
 fn main() {
-    let database = Database::new("postgres", "postgres", "localhost", "users");
+    let database = Database::new("postgres", "admin123", "local-api.local.com", "users");
     let database_arc = Arc::new(Mutex::new(database));
 
     let mut router = Router::new();
@@ -38,6 +38,7 @@ fn main() {
 
     router.post("/users", AddUserHandler::new(database_arc.clone()), "Add user in DB");
     router.get("/users", GetUsersHandler::new(database_arc.clone()), "Get all users from DB");
+    router.delete("/users", DeleteUserHandler::new(database_arc.clone()), "Delete user by email from DB");
 
     Iron::new(router).http("localhost:3000").unwrap();
 }

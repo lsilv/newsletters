@@ -46,3 +46,21 @@ impl Handler for GetUsersHandler {
         Ok(Response::with((status::Ok, json!(users).to_string())))
     }
 }
+
+pub struct DeleteUserHandler {
+    database: Arc<Mutex<Database>>,
+}
+impl DeleteUserHandler {
+    pub fn new(db: Arc<Mutex<Database>>) -> DeleteUserHandler {
+        DeleteUserHandler{database: db}
+    }
+}
+impl Handler for DeleteUserHandler {
+    fn handle(&self, req : &mut Request) -> IronResult<Response> {
+        let mut email = String::new();
+        req.body.read_to_string(&mut email);
+        self.database.deref().lock().unwrap().delete_user(email);
+
+        Ok(Response::with((status::Ok, "Ok")))
+    }
+}
