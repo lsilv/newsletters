@@ -9,6 +9,9 @@ extern crate serde;
 extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 
 use iron::prelude::*;
 use router::Router;
@@ -28,12 +31,14 @@ fn jshandler(_: &mut Request) -> IronResult<Response> {
 
 
 fn main() {
-    let database = Database::new("postgres", "admin123", "local-api.local.com", "users");
+    env_logger::init().unwrap();
+
+    let database = Database::new("postgres", "pstgres", "localhost", "users");
     let database_arc = Arc::new(Mutex::new(database));
 
     let mut router = Router::new();
 
-    router.get("/index", handler, "index");
+    router.get("/*", handler, "index");
     router.get("/index.js", jshandler, "jsindex");
 
     router.post("/users", AddUserHandler::new(database_arc.clone()), "Add user in DB");
