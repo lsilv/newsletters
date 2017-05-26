@@ -3,7 +3,6 @@ use iron::status;
 use iron::Handler;
 use std::sync::{Arc, Mutex};
 use std::ops::Deref;
-use std::path::Path;
 use serde_json;
 use std::io::Read;
 use model::*;
