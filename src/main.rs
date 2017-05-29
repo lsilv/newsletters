@@ -41,8 +41,7 @@ fn jshandler(_: &mut Request) -> IronResult<Response> {
 fn main() {
     env_logger::init().unwrap();
 
-    let request = buildRequest();
-    println!("{}", json!(request).to_string());
+    sendMail("silvialeontiuc@gmail.com");
 
     /*let database = Database::new("postgres", "", "172.18.10.25", "users");
     let database_arc = Arc::new(Mutex::new(database));
@@ -75,25 +74,37 @@ struct FromEntity {
 }
 #[derive(Serialize, Deserialize)]
 struct Content {
-    value: String
-    //TODO: type:
+    value: String,
+    #[serde(rename = "type")]
+    content_type: String
+}
+#[derive(Serialize, Deserialize)]
+struct SandBoxMode {
+    enable: bool
+}
+#[derive(Serialize, Deserialize)]
+struct TestingMode {
+    sandbox_mode: SandBoxMode
 }
 #[derive(Serialize, Deserialize)]
 struct SendGridRequest {
     personalizations: Vec<ToEntity>,
     from: FromEntity,
-    content: Vec<Content>
+    content: Vec<Content>,
+    mail_settings: TestingMode
 }
 
-fn buildRequest() -> SendGridRequest {
-    let to = vec![Email{email: "to_email".to_string()}];
+fn buildRequest(send_to: &str) -> SendGridRequest {
+    let to = vec![Email{email: send_to.to_string()}];
     let to_entity = ToEntity{ to : to, subject: "subject".to_string()};
-    let from_entity = FromEntity { name : "from Work".to_string(), email : "test@test".to_string()};
-    let content = Content { value : "Hello, me".to_string() };
-    SendGridRequest{ personalizations: vec![to_entity], from : from_entity, content : vec![content] }
+    let from_entity = FromEntity { name : "From Work".to_string(), email : "test@test".to_string()};
+    let content = Content { value : "Hello, me".to_string(), content_type : "text/plain".to_string() };
+    SendGridRequest{ personalizations: vec![to_entity], from : from_entity, content : vec![content], mail_settings : TestingMode{ sandbox_mode : SandBoxMode {enable: true}} }
 }
 
 fn sendMail(send_to: &str) {
+
+    let body = json!(buildRequest(send_to)).to_string();
 
     let ssl = NativeTlsClient::new().unwrap();
     let connector = HttpsConnector::new(ssl);
@@ -104,7 +115,7 @@ fn sendMail(send_to: &str) {
     let res = client.
         post("https://api.sendgrid.com/v3/mail/send").
         headers(headers).
-        body("{}").
+        body(&body).
         send().
         unwrap();
     println!("{}", res.status);
