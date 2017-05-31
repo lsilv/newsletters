@@ -1,5 +1,6 @@
 mod model;
 mod controller;
+mod templates;
 
 extern crate iron;
 extern crate router;
@@ -26,6 +27,7 @@ use hyper::client::Client;
 use hyper::header::{Headers, Authorization, ContentType};
 use hyper::net::HttpsConnector;
 use hyper_native_tls::NativeTlsClient;
+use templates::controller::*;
 
 fn handler(_: &mut Request) -> IronResult<Response> {
     Ok(Response::with((status::Ok, Path::new("ui/index.html"))))
@@ -41,7 +43,9 @@ fn jshandler(_: &mut Request) -> IronResult<Response> {
 fn main() {
     env_logger::init().unwrap();
 
-    sendMail("silvialeontiuc@gmail.com");
+    let client = TemplatesClient::new();
+    println!("{}", client.get_templates());
+    println!("{}", client.get_template("1fb13141-c023-4bfc-814b-739ace107025"));
 
     /*let database = Database::new("postgres", "", "172.18.10.25", "users");
     let database_arc = Arc::new(Mutex::new(database));
