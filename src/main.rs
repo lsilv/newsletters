@@ -37,17 +37,19 @@ fn jshandler(_: &mut Request) -> IronResult<Response> {
     Ok(Response::with((status::Ok, Path::new("ui/index.js"))))
 }
 
+//TODO: exception handling
 //TODO: validations
-//TODO: use hyper instead of iron
+//TODO: use hyper instead of iron ?
 
 fn main() {
     env_logger::init().unwrap();
 
-    let client = TemplatesClient::new();
-    println!("{}", client.get_templates());
+    /*let client = TemplatesClient::new();
     println!("{}", client.get_template("1fb13141-c023-4bfc-814b-739ace107025"));
+    println!("{}", client.edit_template("1fb13141-c023-4bfc-814b-739ace107025", "c7e62ccf-c7d1-4131-987b-9a838f93cccc", "New subject", "content 1"));
+*/
 
-    /*let database = Database::new("postgres", "", "172.18.10.25", "users");
+    let database = Database::new("postgres", "", "172.18.10.25", "users");
     let database_arc = Arc::new(Mutex::new(database));
 
     let mut router = Router::new();
@@ -59,7 +61,13 @@ fn main() {
     router.get("/users", GetUsersHandler::new(database_arc.clone()), "Get all users from DB");
     router.delete("/users", DeleteUserHandler::new(database_arc.clone()), "Delete user by email from DB");
 
-    Iron::new(router).http("localhost:3000").unwrap();*/
+    let templates_client_arc = Arc::new(Mutex::new(TemplatesClient::new()));
+
+    router.get("/templates", GetTemplatesHandler::new(templates_client_arc.clone()), "Get all templates");
+    router.get("/templates/:template_id", GetTemplateHandler::new(templates_client_arc.clone()), "Get template by id");
+    router.put("/templates/:template_id", EditTemplateHandler::new(templates_client_arc.clone()), "Edit template");
+
+    Iron::new(router).http("localhost:3000").unwrap();
 }
 
 #[derive(Serialize, Deserialize)]

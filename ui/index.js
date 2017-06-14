@@ -9,6 +9,13 @@ $(document).ready(
 
         });
 
+        $.get("http://localhost:3000/templates", function(res) {
+            var templates = JSON.parse(res).templates;
+            for (index in templates) {
+                $("#templates").append(buildTemplateButton("View " + templates[index].name + " template", templates[index].id));
+            }
+        });
+
    }
 );
 
@@ -61,4 +68,54 @@ function buildAddUserRow() {
                     "<td><input type='button' class='w3-button w3-circle w3-hover-indigo' onclick=\"addUser()\" value='+'></td>" +
                "</tr>";
     return html;
+}
+
+function buildTemplateButton(name, templateId) {
+    var html = "<button onclick='showTemplate(\""+ templateId +"\")' class='w3-button w3-margin-top w3-indigo w3-round w3-block w3-left-align' id='" + templateId + "'><b>" + name + "</b></button>";
+    html += "<p></p>";
+    return html;
+}
+
+function showTemplate(templateId) {
+    $.ajax({
+        url: 'http://localhost:3000/templates/' + templateId,
+        type: 'GET',
+        success: function(result) {
+            $("#template").append(setTemplate(JSON.parse(result)));
+        },
+        error: function (err) {
+            $("#template").append("Error");
+        }
+    });
+}
+
+function setTemplate(template) {
+    $("#template").addClass("w3-show");
+    $("#subject").val(template.versions[0].subject);
+    $("#content").val(template.versions[0].plain_content);
+    $("#versionid").val(template.versions[0].id);
+    $("#templateid").val(template.versions[0].template_id);
+}
+
+function editTemplate() {
+    var request = "{ \"subject\": \"" + $("#subject").val() + "\", ";
+    request += "\"content\": \"" + $("#content").val() + "\", ";
+    request += "\"version_id\": \"" + $("#versionid").val() + "\"}";
+    alert(request);
+    
+    $.ajax({
+        url: 'http://localhost:3000/templates/' + $("#templateid").val(),
+        type: 'PUT',
+        data: request,
+        success: function(result) {
+            $("#template").append(setTemplate(JSON.parse(result)));
+        },
+        error: function (err) {
+            $("#template").append("Error");
+        }
+    });
+}
+
+function sendEmails() {
+    alert("Not implemented");
 }

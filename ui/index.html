@@ -12,28 +12,34 @@
     <h1>Newsletter service</h1>
 </div>
 
+<div class="w3-panel">
+    <table class='w3-table w3-bordered w3-card-2' id='usersTable'>
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<hr>
+
 <div class="w3-panel w3-cell-row">
-    <div class="w3-panel w3-cell">
-        <div class="">
-            <button class="w3-button w3-margin-top w3-hover-indigo w3-round w3-block w3-left-align"><b>Send welcome email</b></button>
-            <p></p>
-            <button class="w3-button w3-margin-top w3-hover-indigo w3-round w3-block w3-left-align"><b>Send news email</b></button>
-            <p></p>
-            <button class="w3-button w3-margin-top w3-hover-indigo w3-round w3-block w3-left-align"><b>Send ad email</b></button>
-        </div>
+    <div class="w3-panel w3-cell" id="templates">
     </div>
 
-    <div class="w3-panel w3-cell" style="width: 60%">
-        <table class='w3-table w3-bordered w3-card-2' id='usersTable'>
-            <thead>
-            <tr>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-        </table>
+    <div class="w3-panel w3-cell w3-hide" style="width: 60%" id="template">
+        <label>Subject</label>
+        <input class="w3-input w3-border" type="text" id="subject">
+        <label>Content</label>
+        <input class="w3-input w3-border" type="text" id="content">
+        <input class="w3-hide" type="text" id="versionid">
+        <input class="w3-hide" type="text" id="templateid">
+        <button class="w3-button w3-indigo" onclick="editTemplate()">Save template</button>
+        <button class="w3-button w3-indigo" onclick="sendEmails()">Send emails</button>
     </div>
 </div>
 

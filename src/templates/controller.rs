@@ -47,4 +47,18 @@ impl TemplatesClient {
         response_body
     }
 
+    pub fn edit_template(&self, template_id: &str, version_id: &str, subject: &str, content: &str) -> String {
+        let url = self.url.clone() + "/" + template_id + "/versions/" + version_id;
+        let body = "{ \"plain_content\": \"".to_string() + content + "\"}";
+        let mut response = self.api_client.
+            patch(&url).
+            headers(self.headers.clone()).
+            body(&body).
+            send().
+            unwrap();
+        let mut response_body = String::new();
+        response.read_to_string(&mut response_body);
+        response_body
+    }
+
 }
