@@ -111,15 +111,27 @@ impl Handler for EditTemplateHandler {
 
         let mut template_data = String::new();
         req.body.read_to_string(&mut template_data);
-        let data: TemplateData = serde_json::from_str(&template_data).unwrap();
 
-        let updated_template = self.template_client.deref().lock().unwrap().edit_template(template_id, &data.version_id, &data.subject, &data.content);
+        let updated_template = self.template_client.deref().lock().unwrap().edit_template(template_id, &template_data);
         Ok(Response::with((status::Ok, updated_template)))
     }
 }
-#[derive(Serialize, Deserialize)]
-struct TemplateData {
-    subject: String,
-    content: String,
-    version_id: String
+
+pub struct AddTemplateHandler {
+    template_client: Arc<Mutex<TemplatesClient>>,
+}
+impl AddTemplateHandler {
+    pub fn new(client: Arc<Mutex<TemplatesClient>>) -> AddTemplateHandler {
+        AddTemplateHandler { template_client : client}
+    }
+}
+impl Handler for AddTemplateHandler {
+    fn handle(&self, req : &mut Request) -> IronResult<Response> {
+
+        let mut template_data = String::new();
+        req.body.read_to_string(&mut template_data);
+
+        let new_template = self.template_client.deref().lock().unwrap().add_template(&template_data);
+        Ok(Response::with((status::Ok, new_template)))
+    }
 }

@@ -28,18 +28,47 @@
 <hr>
 
 <div class="w3-panel w3-cell-row">
-    <div class="w3-panel w3-cell" id="templates">
+    <div class="w3-panel w3-cell" style="width: 40%" id="templates">
     </div>
 
-    <div class="w3-panel w3-cell w3-hide" style="width: 60%" id="template">
-        <label>Subject</label>
-        <input class="w3-input w3-border" type="text" id="subject">
-        <label>Content</label>
-        <input class="w3-input w3-border" type="text" id="content">
-        <input class="w3-hide" type="text" id="versionid">
-        <input class="w3-hide" type="text" id="templateid">
-        <button class="w3-button w3-indigo" onclick="editTemplate()">Save template</button>
-        <button class="w3-button w3-indigo" onclick="sendEmails()">Send emails</button>
+    <div class="w3-panel w3-card-2 w3-cell" id="template" style="display: none">
+        <h3>Example1</h3>
+        <div class="w3-container">
+            <p>
+                <label>Subject</label>
+                <input class="w3-input w3-border" type="text" id="subject">
+            </p>
+            <p>
+                <label>Content</label>
+                <textarea class="w3-input w3-border" id="content" rows="3"></textarea>
+            </p>
+            <p>
+                <input class="w3-hide" type="text" id="versionid">
+                <input class="w3-hide" type="text" id="templateid">
+                <button class="w3-button w3-indigo" onclick="editTemplate()">Save template</button>
+                <button class="w3-button w3-indigo" onclick="sendEmails()">Send emails</button>
+            </p>
+        </div>
+    </div>
+
+    <div class="w3-panel w3-card-2 w3-cell" id="newTemplate" style="display: none">
+        <div class="w3-container">
+            <p>
+                <label>Name</label>
+                <input class="w3-input w3-border" type="text" id="newName" placeholder="New template name">
+            </p>
+            <p>
+                <label>Subject</label>
+                <input class="w3-input w3-border" type="text" id="newSubject">
+            </p>
+            <p>
+                <label>Content</label>
+                <textarea class="w3-input w3-border" id="newContent" rows="3"></textarea>
+            </p>
+            <p>
+                <button class="w3-button w3-indigo" onclick="addTemplate()">Save template</button>
+            </p>
+        </div>
     </div>
 </div>
 

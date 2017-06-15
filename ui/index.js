@@ -12,8 +12,9 @@ $(document).ready(
         $.get("http://localhost:3000/templates", function(res) {
             var templates = JSON.parse(res).templates;
             for (index in templates) {
-                $("#templates").append(buildTemplateButton("View " + templates[index].name + " template", templates[index].id));
+                $("#templates").append(buildTemplateButton(templates[index].name + " template", templates[index].id));
             }
+            $("#templates").append(buildAddTemplateButton());
         });
 
    }
@@ -54,7 +55,7 @@ function buildUserRow(user) {
     html += "<td>" + user.email + "</td>";
     html += "<td>" + user.first_name + "</td>";
     html += "<td>" + user.last_name + "</td>";
-    html += "<td><button class='w3-button w3-circle w3-hover-indigo' onclick=\"deleteUser('" + user.email + "')\"><b>x</b></button></td>";
+    html += "<td><button class='w3-button w3-circle w3-indigo' onclick=\"deleteUser('" + user.email + "')\">x</button></td>";
     html += "</tr>";
 
     return html;
@@ -65,15 +66,26 @@ function buildAddUserRow() {
                     "<td><input id='newEmail' class='w3-input' placeholder='New email'></td>" +
                     "<td><input id='newFirstName' class='w3-input' placeholder='First name'></td>" +
                     "<td><input id='newLastName' class='w3-input' placeholder='Last name'></td>" +
-                    "<td><input type='button' class='w3-button w3-circle w3-hover-indigo' onclick=\"addUser()\" value='+'></td>" +
+                    "<td><input type='button' class='w3-button w3-circle w3-indigo' onclick=\"addUser()\" value='+'></td>" +
                "</tr>";
     return html;
 }
 
 function buildTemplateButton(name, templateId) {
-    var html = "<button onclick='showTemplate(\""+ templateId +"\")' class='w3-button w3-margin-top w3-indigo w3-round w3-block w3-left-align' id='" + templateId + "'><b>" + name + "</b></button>";
+    var html = "<button onclick='showTemplate(\""+ templateId +"\")' class='w3-button w3-margin-top w3-indigo w3-block w3-left-align' id='" + templateId + "'>" + name + "</button>";
     html += "<p></p>";
     return html;
+}
+
+function buildAddTemplateButton() {
+    var html = "<button onclick='showNewTemplateForm()' class='w3-button w3-margin-top w3-indigo w3-block w3-left-align'>Add a new template</button>";
+    html += "<p></p>";
+    return html;
+}
+
+function showNewTemplateForm() {
+    document.getElementById('template').style.display = 'none';
+    document.getElementById('newTemplate').style.display = 'block';
 }
 
 function showTemplate(templateId) {
@@ -90,19 +102,24 @@ function showTemplate(templateId) {
 }
 
 function setTemplate(template) {
-    $("#template").addClass("w3-show");
-    $("#subject").val(template.versions[0].subject);
-    $("#content").val(template.versions[0].plain_content);
-    $("#versionid").val(template.versions[0].id);
-    $("#templateid").val(template.versions[0].template_id);
+    if ("error" in template) {
+        $("#template").append("Error: " + template);
+    } else {
+        document.getElementById('template').style.display = 'block';
+        document.getElementById('newTemplate').style.display = 'none';
+        $("#subject").val(template.versions[0].subject);
+        $("#content").val(template.versions[0].plain_content);
+        $("#versionid").val(template.versions[0].id);
+        $("#templateid").val(template.versions[0].template_id);
+    }
 }
 
 function editTemplate() {
     var request = "{ \"subject\": \"" + $("#subject").val() + "\", ";
     request += "\"content\": \"" + $("#content").val() + "\", ";
     request += "\"version_id\": \"" + $("#versionid").val() + "\"}";
-    alert(request);
-    
+    request = request.replace('\n', '\\n');
+
     $.ajax({
         url: 'http://localhost:3000/templates/' + $("#templateid").val(),
         type: 'PUT',
@@ -111,7 +128,23 @@ function editTemplate() {
             $("#template").append(setTemplate(JSON.parse(result)));
         },
         error: function (err) {
-            $("#template").append("Error");
+            $("#template").append("Error: ");
+        }
+    });
+}
+
+function addTemplate() {
+    var request = "{ \"name\": \"" + $("#newName").val() + "\"}";
+
+    $.ajax({
+        url: 'http://localhost:3000/templates',
+        type: 'POST',
+        data: request,
+        success: function(result) {
+            location.reload();
+        },
+        error: function (err) {
+            $("#newTemplate").append("Error: ");
         }
     });
 }

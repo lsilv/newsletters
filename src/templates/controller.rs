@@ -3,6 +3,19 @@ use hyper::header::{Headers, Authorization, ContentType};
 use hyper::net::HttpsConnector;
 use hyper_native_tls::NativeTlsClient;
 use std::io::Read;
+use serde_json;
+
+#[derive(Serialize, Deserialize)]
+struct ReceivedTemplateData {
+    subject: String,
+    content: String,
+    version_id: String
+}
+#[derive(Serialize, Deserialize)]
+struct SentTemplateData {
+    subject: String,
+    plain_content: String
+}
 
 pub struct TemplatesClient {
     api_client : Client,
@@ -47,13 +60,32 @@ impl TemplatesClient {
         response_body
     }
 
-    pub fn edit_template(&self, template_id: &str, version_id: &str, subject: &str, content: &str) -> String {
-        let url = self.url.clone() + "/" + template_id + "/versions/" + version_id;
-        let body = "{ \"plain_content\": \"".to_string() + content + "\"}";
+    pub fn edit_template(&self, template_id: &str, received_data: &str) -> String {
+
+        let received_data: ReceivedTemplateData = serde_json::from_str(received_data).unwrap();
+        let send_data = SentTemplateData { subject: received_data.subject, plain_content : received_data.content };
+
+        let url = self.url.clone() + "/" + template_id + "/versions/" + &received_data.version_id;
+
         let mut response = self.api_client.
             patch(&url).
             headers(self.headers.clone()).
-            body(&body).
+            body(&json!(send_data).to_string()).
+            send().
+            unwrap();
+        let mut response_body = String::new();
+        response.read_to_string(&mut response_body);
+        response_body
+    }
+
+    pub fn add_template(&self, name: &str) -> String {
+
+        let url = self.url.clone();
+
+        let mut response = self.api_client.
+            post(&url).
+            headers(self.headers.clone()).
+            body(name).
             send().
             unwrap();
         let mut response_body = String::new();

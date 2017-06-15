@@ -64,6 +64,7 @@ fn main() {
     let templates_client_arc = Arc::new(Mutex::new(TemplatesClient::new()));
 
     router.get("/templates", GetTemplatesHandler::new(templates_client_arc.clone()), "Get all templates");
+    router.post("/templates", AddTemplateHandler::new(templates_client_arc.clone()), "Add a new template");
     router.get("/templates/:template_id", GetTemplateHandler::new(templates_client_arc.clone()), "Get template by id");
     router.put("/templates/:template_id", EditTemplateHandler::new(templates_client_arc.clone()), "Edit template");
 
