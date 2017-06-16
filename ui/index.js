@@ -107,16 +107,17 @@ function setTemplate(template) {
     } else {
         document.getElementById('template').style.display = 'block';
         document.getElementById('newTemplate').style.display = 'none';
+        $("#templateid").val(template.id);
         $("#subject").val(template.versions[0].subject);
         $("#content").val(template.versions[0].plain_content);
         $("#versionid").val(template.versions[0].id);
-        $("#templateid").val(template.versions[0].template_id);
     }
 }
 
 function editTemplate() {
     var request = "{ \"subject\": \"" + $("#subject").val() + "\", ";
     request += "\"content\": \"" + $("#content").val() + "\", ";
+    request += "\"name\": \"" + "Name" + "\", ";
     request += "\"version_id\": \"" + $("#versionid").val() + "\"}";
     request = request.replace('\n', '\\n');
 
@@ -134,8 +135,11 @@ function editTemplate() {
 }
 
 function addTemplate() {
-    var request = "{ \"name\": \"" + $("#newName").val() + "\"}";
-
+    var request = "{ \"name\": \"" + $("#newName").val() + "\",";
+    request += "\"content\": \"" + $("#newContent").val() + "\", ";
+    request += "\"version_id\": \"no\",";
+    request += "\"subject\": \"" + $("#newSubject").val() + "\"}";
+    
     $.ajax({
         url: 'http://localhost:3000/templates',
         type: 'POST',
@@ -145,6 +149,19 @@ function addTemplate() {
         },
         error: function (err) {
             $("#newTemplate").append("Error: ");
+        }
+    });
+}
+
+function deleteTemplate() {
+    $.ajax({
+        url: 'http://localhost:3000/templates/' + $("#templateid").val(),
+        type: 'DELETE',
+        success: function(result) {
+            location.reload();
+        },
+        error: function (err) {
+            $("#template").append("Error: ");
         }
     });
 }

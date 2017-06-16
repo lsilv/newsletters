@@ -135,3 +135,20 @@ impl Handler for AddTemplateHandler {
         Ok(Response::with((status::Ok, new_template)))
     }
 }
+
+pub struct DeleteTemplateHandler {
+    template_client: Arc<Mutex<TemplatesClient>>,
+}
+impl DeleteTemplateHandler {
+    pub fn new(client: Arc<Mutex<TemplatesClient>>) -> DeleteTemplateHandler {
+        DeleteTemplateHandler { template_client : client}
+    }
+}
+impl Handler for DeleteTemplateHandler {
+    fn handle(&self, req : &mut Request) -> IronResult<Response> {
+        let ref template_id = req.extensions.get::<Router>().unwrap().find("template_id").unwrap_or("/");
+
+        let new_template = self.template_client.deref().lock().unwrap().delete_template(template_id);
+        Ok(Response::with((status::Ok, new_template)))
+    }
+}

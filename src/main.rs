@@ -67,6 +67,7 @@ fn main() {
     router.post("/templates", AddTemplateHandler::new(templates_client_arc.clone()), "Add a new template");
     router.get("/templates/:template_id", GetTemplateHandler::new(templates_client_arc.clone()), "Get template by id");
     router.put("/templates/:template_id", EditTemplateHandler::new(templates_client_arc.clone()), "Edit template");
+    router.delete("/templates/:template_id", DeleteTemplateHandler::new(templates_client_arc.clone()), "Delete template");
 
     Iron::new(router).http("localhost:3000").unwrap();
 }
