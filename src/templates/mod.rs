@@ -1,2 +1,2 @@
-pub mod model;
-pub mod controller;
+pub mod handlers;
+pub mod templates_client;

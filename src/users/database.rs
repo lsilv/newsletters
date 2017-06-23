@@ -21,7 +21,7 @@ impl Database {
 
     pub fn insert_user(&self, user: User) {
         self.connection.execute("INSERT INTO users (email, first_name, last_name) VALUES ($1, $2, $3)",
-                     &[&user.email, &user.first_name, &user.last_name]).unwrap();
+                                &[&user.email, &user.first_name, &user.last_name]).unwrap();
     }
 
     pub fn get_users(&self) -> Rows<> {

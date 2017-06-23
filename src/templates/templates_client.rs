@@ -5,26 +5,6 @@ use hyper_native_tls::NativeTlsClient;
 use std::io::Read;
 use serde_json;
 
-#[derive(Serialize, Deserialize)]
-struct Template {
-    id: String
-}
-
-#[derive(Serialize, Deserialize)]
-struct ReceivedTemplateData {
-    subject: String,
-    content: String,
-    name: String,
-    version_id: String
-}
-#[derive(Serialize, Deserialize)]
-struct SentTemplateData {
-    name: String,
-    subject: String,
-    plain_content: String,
-    html_content: String
-}
-
 pub struct TemplatesClient {
     api_client : Client,
     headers: Headers,
@@ -122,9 +102,8 @@ impl TemplatesClient {
         response_body
     }
 
-    //TODO: delete versions first
-    pub fn delete_template(&self, template_id: &str) -> String {
-        let url = self.url.clone() + "/" + template_id;
+    pub fn delete_template(&self, template_id: &str, version_id: &str) -> String {
+        let mut url = self.url.clone() + "/" + template_id + "/versions/" + version_id;
 
         let mut response = self.api_client.
             delete(&url).
@@ -134,7 +113,38 @@ impl TemplatesClient {
         let mut response_body = String::new();
         response.read_to_string(&mut response_body);
         println!("{}", response_body);
+
+        url = self.url.clone() + "/" + template_id;
+
+        let mut response = self.api_client.
+            delete(&url).
+            headers(self.headers.clone()).
+            send().
+            unwrap();
+        response.read_to_string(&mut response_body);
+        println!("{}", response_body);
         response_body
     }
 
+}
+
+
+#[derive(Serialize, Deserialize)]
+struct Template {
+    id: String
+}
+
+#[derive(Serialize, Deserialize)]
+struct ReceivedTemplateData {
+    subject: String,
+    content: String,
+    name: String,
+    version_id: String
+}
+#[derive(Serialize, Deserialize)]
+struct SentTemplateData {
+    name: String,
+    subject: String,
+    plain_content: String,
+    html_content: String
 }
