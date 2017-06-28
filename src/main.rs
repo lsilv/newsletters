@@ -10,7 +10,6 @@ extern crate serde;
 extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
-#[macro_use]
 extern crate log;
 extern crate env_logger;
 extern crate hyper;
@@ -66,6 +65,8 @@ fn main() {
     router.get("/templates/:template_id", GetTemplateHandler::new(templates_client_arc.clone()), "Get template by id");
     router.put("/templates/:template_id", EditTemplateHandler::new(templates_client_arc.clone()), "Edit template");
     router.delete("/templates/:template_id/:version_id", DeleteTemplateHandler::new(templates_client_arc.clone()), "Delete template");
+
+    router.post("/send/:template_id", MailSender::new(database_arc.clone()), "Send mail to all users from DB");
 
     Iron::new(router).http("localhost:3000").unwrap();
 }

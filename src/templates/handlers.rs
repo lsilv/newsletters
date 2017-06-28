@@ -16,7 +16,7 @@ impl GetTemplatesHandler {
     }
 }
 impl Handler for GetTemplatesHandler {
-    fn handle(&self, req : &mut Request) -> IronResult<Response> {
+    fn handle(&self, _: &mut Request) -> IronResult<Response> {
         let templates = self.template_client.deref().lock().unwrap().get_templates();
         Ok(Response::with((status::Ok, templates)))
     }

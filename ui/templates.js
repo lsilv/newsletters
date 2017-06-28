@@ -109,5 +109,14 @@ function deleteTemplate() {
 }
 
 function sendEmails() {
-    alert("Not implemented");
+    $.ajax({
+        url: 'http://localhost:3000/send/' + $("#templateid").val(),
+        type: 'POST',
+        success: function(data, status) {
+            $("#template").append(status + data);
+        },
+        error: function (err, status) {
+            $("#template").append("Invalid emails");
+        }
+    });
 }
