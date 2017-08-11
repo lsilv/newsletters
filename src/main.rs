@@ -43,7 +43,7 @@ fn templatesjs_handler(_: &mut Request) -> IronResult<Response> {
 //TODO: use hyper instead of iron ?
 
 fn main() {
-    env_logger::init().unwrap();
+    env_logger::init();
 
     let database = Database::new("postgres", "", "172.18.10.25", "users");
     let database_arc = Arc::new(Mutex::new(database));
