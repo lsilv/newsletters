@@ -1,6 +1,6 @@
 $(document).ready(
     function() {
-        $.get("http://localhost:3000/users", function(res) {
+        $.get("/users", function(res) {
             var users = JSON.parse(res);
             for (index in users) {
                 $("#usersTable").append(buildUserRow(users[index]));
@@ -18,7 +18,7 @@ function addUser() {
 
     $.post("/users", newUser, function(res) {
         if (res == "Ok") {
-            window.location.href = "http://localhost:3000";
+            window.location.href = "/index";
         } else {
             $("#newUser").append("Error");
         }
@@ -28,11 +28,11 @@ function addUser() {
 
 function deleteUser(email) {
     $.ajax({
-        url: 'http://localhost:3000/users',
+        url: '/users',
         type: 'DELETE',
         data: email,
         success: function(result) {
-            window.location.href = "http://localhost:3000";
+            window.location.href = "/index";
         },
         error: function (err) {
             $("#newUser").append("Error");

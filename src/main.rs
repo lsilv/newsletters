@@ -50,7 +50,7 @@ fn main() {
 
     let mut router = Router::new();
 
-    router.get("", handler, "index");
+    router.get("/index", handler, "index");
     router.get("/users.js", usersjs_handler, "Return user.js from server");
     router.get("/templates.js", templatesjs_handler, "Return templates.js from server");
 
@@ -68,5 +68,5 @@ fn main() {
 
     router.post("/send/:template_id", MailSender::new(database_arc.clone()), "Send mail to all users from DB");
 
-    Iron::new(router).http("localhost:3000").unwrap();
+    Iron::new(router).http("0.0.0.0:3000").unwrap();
 }

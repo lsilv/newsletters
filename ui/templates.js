@@ -1,6 +1,6 @@
 $(document).ready(
     function() {
-        $.get("http://localhost:3000/templates", function(res) {
+        $.get("/templates", function(res) {
             var templates = JSON.parse(res).templates;
             for (index in templates) {
                 $("#templates").append(buildTemplateButton(templates[index].name + " template", templates[index].id));
@@ -30,7 +30,7 @@ function showNewTemplateForm() {
 
 function showTemplate(templateId) {
     $.ajax({
-        url: 'http://localhost:3000/templates/' + templateId,
+        url: '/templates/' + templateId,
         type: 'GET',
         success: function(result) {
             $("#template").append(setTemplate(JSON.parse(result)));
@@ -63,7 +63,7 @@ function editTemplate() {
     request = request.replace('\n', '\\n');
 
     $.ajax({
-        url: 'http://localhost:3000/templates/' + $("#templateid").val(),
+        url: '/templates/' + $("#templateid").val(),
         type: 'PUT',
         data: request,
         success: function(result) {
@@ -83,7 +83,7 @@ function addTemplate() {
     request = request.replace('\n', '\\n');
 
     $.ajax({
-        url: 'http://localhost:3000/templates',
+        url: '/templates',
         type: 'POST',
         data: request,
         success: function(result) {
@@ -97,7 +97,7 @@ function addTemplate() {
 
 function deleteTemplate() {
     $.ajax({
-        url: 'http://localhost:3000/templates/' + $("#templateid").val() + '/' + $("#versionid").val(),
+        url: '/templates/' + $("#templateid").val() + '/' + $("#versionid").val(),
         type: 'DELETE',
         success: function(result) {
             location.reload();
@@ -110,7 +110,7 @@ function deleteTemplate() {
 
 function sendEmails() {
     $.ajax({
-        url: 'http://localhost:3000/send/' + $("#templateid").val(),
+        url: '/send/' + $("#templateid").val(),
         type: 'POST',
         success: function(data, status) {
             $("#template").append(status + data);
